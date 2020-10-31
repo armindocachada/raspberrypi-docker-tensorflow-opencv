@@ -35,8 +35,6 @@ RUN cmake -D ENABLE_NEON=ON  -D ENABLE_VFPV3=ON \
       --enable-libopencv --enable-libx264 --enable-shared ..
 
 RUN make -j4
-
-
 RUN make install
 RUN ldconfig
 
