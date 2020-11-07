@@ -6,6 +6,7 @@ RUN apt-get -y install libjpeg-dev libpng-dev libtiff-dev
 RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
 RUN apt-get -y install libxvidcore-dev libx264-dev
 RUN apt-get install -y python3-dev
+RUN apt-get -y install libgtk2.0-dev
 
 ENV OPENCV_VERSION=4.5.0
 
@@ -40,5 +41,7 @@ RUN ldconfig
 
 WORKDIR /root/
 RUN rm -fr /root/opencv* && rm -fr /root/${OPENCV_VERSION}.zip
+RUN export READTHEDOCS=True && pip3 install picamera[array]
+RUN pip3 install matplotlib && apt-get install python3-tk
 
 CMD ["tail","-f","/dev/null"]

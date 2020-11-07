@@ -7,4 +7,13 @@ services:
         dockerfile: Dockerfile
      network_mode: host
      restart: always
-
+     volumes:
+        - /opt/vc:/opt/vc
+        - ./python:/app
+        - /tmp/.X11-unix:/tmp/.X11-unix
+     environment:
+        LD_LIBRARY_PATH: /opt/vc/lib
+        DISPLAY:
+     devices:
+        - "/dev/vchiq:/dev/vchiq"
+     privileged: true
