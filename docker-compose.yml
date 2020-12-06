@@ -4,7 +4,7 @@ services:
      container_name: camera 
      build:
         context: .
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile_tensorflow
      network_mode: host
      restart: always
      volumes:
