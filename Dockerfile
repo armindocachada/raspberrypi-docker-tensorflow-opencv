@@ -1,3 +1,3 @@
-FROM armindocachada/tensorflow2-raspberrypi4:2.2.0-cp37-none-linux_armv7l
+FROM armindocachada/tensorflow2-opencv4-raspberrypi4:2.2_4.5.0
 
 CMD ["tail","-f","/dev/null"]
