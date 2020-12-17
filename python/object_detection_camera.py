@@ -8,6 +8,10 @@ from object_detection.utils import visualization_utils as viz_utils
 import matplotlib.pyplot as plt
 #from PIL import Image, ImageDraw, ImageFont
 import time
+import six.moves.urllib as urllib
+import os
+import tarfile
+
 from six import BytesIO
 
 # Load the COCO Label Map
@@ -96,6 +100,23 @@ category_index = {
 }
 
 
+def downloadModel(MODEL_URL):
+    firstpos = MODEL_URL.rfind("/")
+    lastpos = MODEL_URL.rfind(".")
+    MODEL_NAME = MODEL_URL[firstpos + 1:lastpos]
+    MODEL_FILE = MODEL_NAME + '.tar.gz'
+
+    print("Preparing to download tensorflow model {}".format(MODEL_FILE))
+    print("Is file downloaded? %s " % os.path.isfile(MODEL_FILE))
+    if not os.path.isfile(MODEL_FILE):
+        opener = urllib.request.URLopener()
+        opener.retrieve(MODEL_URL, MODEL_FILE)
+    tar_file = tarfile.open(MODEL_FILE)
+    for file in tar_file.getmembers():
+        file_name = os.path.basename(file.name)
+        tar_file.extract(file, os.getcwd())
+
+
 def loadTensorflowModel():
     start_time = time.time()
     tf.keras.backend.clear_session()
@@ -129,11 +150,13 @@ def doinference(image_np):
 
     return image_np_with_detections
 
+MODEL_URL="http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz"
 
+os.chdir("/tensorflow/models/research/object_detection/test_data/")
+downloadModel(MODEL_URL)
 detect_fn= loadTensorflowModel()
 # start of main code
 # read from camera
-
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
