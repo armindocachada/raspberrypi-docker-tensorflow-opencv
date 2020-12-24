@@ -6,6 +6,8 @@ Suffice to say that I am trying to build a docker container with version 2.3 of 
 If you are looking for answers before I get to build the Readme.md I recommend you to watch how I built this repository on Youtube:
 https://www.youtube.com/watch?v=uENGyDXnI2M&list=PL3OV2Akk7XpAOAeD8BbqpHcELoxihaMvc
 
+Step By Step Instructions: https://spltech.co.uk/how-to-run-object-detection-with-tensorflow-2-on-the-raspberry-pi-using-docker/
+
 In this readme I am going to show you how you can 
 
 
