@@ -8,8 +8,8 @@ RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" |
     && apt-get update \
     && apt-get install -y python3-pycoral python3-tflite-runtime
 
-RUN pip3 install imutils
-
+RUN pip3 install imutils && pip3 install slackclient
+RUN apt-get install -y ffmpeg
 
 COPY scripts/ /scripts
 

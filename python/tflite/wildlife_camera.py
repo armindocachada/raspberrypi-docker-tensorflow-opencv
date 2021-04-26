@@ -16,7 +16,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import os
+import sys
+# sys.path.append(os.path.dirname("{os.getcwd()}/notif"))
+# sys.path.append(os.path.dirname("{os.getcwd()}/utils"))
+# sys.path.append(os.path.dirname("{os.getcwd()}"))
 
 import random
 import picamera
@@ -30,11 +34,14 @@ from picamera import PiCamera
 import logging
 import detect
 from imutils.video import VideoStream, FPS
-import os
+
 import tflite_runtime.interpreter as tflite
 
 from PIL import Image
 from PIL import ImageDraw
+
+from notif.notifications import *
+from myutils.videoutils import VideoUtils
 
 EDGETPU_SHARED_LIB="libedgetpu.so.1"
 
@@ -116,7 +123,10 @@ def detected_object(objs, labelsToDetectStr, labels):
 
     return False
 
-def log_detected_objects(objs, objects_to_detect, labels):
+def log_detected_objects(frame, objs, objects_to_detect, labels, notifications):
+    draw_objects(frame, objs, objects_to_detect, labels)
+
+
     for obj in objs:
         bbox = obj.bbox
         # check if this object is in the list objects to detect - and set different color
@@ -124,6 +134,10 @@ def log_detected_objects(objs, objects_to_detect, labels):
 
         if detected_object([obj], objects_to_detect, labels):
             logger.info('Detected object= %s=%.2f' % (labels.get(obj.id, obj.id), obj.score))
+
+    # send notification to slack
+    notification = Notification(NotificationType.FRAME, frame)
+    notifications.notify(notification)
 
 
 def draw_objects(image, objs, objects_to_detect, labels):
@@ -164,7 +178,10 @@ def enableCircularCameraRecording(piVideoStream):
 def recordVideoFromCamera(piVideoStream, circularStream):
     currentDate = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
     piVideoStream.camera.wait_recording(10)
-    circularStream.copy_to('/output/motion_' + currentDate + ".h264")
+    videoFilename = '/output/motion_' + currentDate + ".h264"
+    circularStream.copy_to(videoFilename)
+
+    return videoFilename
     #camera.stop_recording()
 
 import urllib
@@ -173,7 +190,6 @@ import tarfile
 
 
 def main():
-
   parser = argparse.ArgumentParser(
       formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
@@ -188,7 +204,17 @@ def main():
   parser.add_argument('-debug', '--enable-debug', action='store_true',
                       help='Whether Debug is enabled or not - Webcamera viewed is displayed when in this mode')
 
+  parser.add_argument("-cslack", "--clear-slack-files", action='store_true',
+                  help="clears files in slack")
+
+  parser.add_argument("-slack", "--slack-credentials", type=str, default="config.ini",
+                  help="path to optional slack configuration")
+
   args = parser.parse_args()
+
+  notifications = Notifications(args)
+  notifications.start()
+
 
   objects_to_detect = args.detect_objects
 
@@ -242,9 +268,12 @@ def main():
 
       # we only record to video file if not in debug mode
       if  not args.enable_debug and detected_object(objs, objects_to_detect, labels):
-        log_detected_objects(objs, objects_to_detect, labels)
+        log_detected_objects(frame, objs, objects_to_detect, labels, notifications)
+
         # record 20 s video clip - it will freeze main thread
-        recordVideoFromCamera(piVideoStream,cameraCircularStream)
+        videoFilename = recordVideoFromCamera(piVideoStream,cameraCircularStream)
+        notification = Notification(NotificationType.VIDEO, videoFilename)
+        notifications.notify(notification)
       # in debug mode we show the object detection boxes
 
 
@@ -260,7 +289,7 @@ def main():
   print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
   cv2.destroyAllWindows()
-
+  notifications.join()
 
 
 if __name__ == '__main__':

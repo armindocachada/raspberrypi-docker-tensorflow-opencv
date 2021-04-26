@@ -20,4 +20,4 @@ services:
         - "/dev/vchiq:/dev/vchiq"
      privileged: true
      #entrypoint: ["/scripts/start_camera.sh",  "--enable-tpu", "-objects", "person" ]
-     entrypoint: ["/scripts/start_camera.sh",  "-objects", "person" ]
+     entrypoint: ["/scripts/start_camera.sh",  "-objects", "person,bird" ]
