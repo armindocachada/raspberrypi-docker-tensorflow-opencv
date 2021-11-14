@@ -194,7 +194,7 @@ def main():
       formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 
-  parser.add_argument('-t', '--threshold', type=float, default=0.3,
+  parser.add_argument('-t', '--threshold', type=float, default=0.5,
                       help='Score threshold for detected objects.')
   parser.add_argument('-c', '--count', type=int, default=5,
                       help='Number of times to run inference')

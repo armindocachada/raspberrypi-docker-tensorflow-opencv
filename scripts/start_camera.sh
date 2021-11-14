@@ -12,6 +12,7 @@ mkdir -p ${DATA_DIR}/edgetpu
 
 #
 ## Get TF Lite model and labels
+<<<<<<< HEAD
 curl -C - -O http://storage.googleapis.com/download.tensorflow.org/models/tflite/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip
 unzip -n coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip -d ${DATA_DIR}/tflite
 rm coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip
