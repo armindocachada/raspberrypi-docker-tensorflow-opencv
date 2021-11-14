@@ -98,5 +98,13 @@ RUN echo 'export OBJECT_DETECTION_API_PATH=/tensorflow/models/research/object_de
 RUN cd /tensorflow/models/research && echo "export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim:`pwd`/object_detection" >> /root/.bashrc
 
 RUN export READTHEDOCS=True && pip3 install picamera[array]
+RUN apt-get -y install curl
+RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list \
+    && echo "deb https://packages.cloud.google.com/apt coral-cloud-stable main" | tee /etc/apt/sources.list.d/coral-cloud.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+    && apt-get update \
+    && apt-get install -y python3-pycoral python3-tflite-runtime
+
+
 
 CMD ["tail","-f","/dev/null"]

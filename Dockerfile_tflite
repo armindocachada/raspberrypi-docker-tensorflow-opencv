@@ -1,0 +1,16 @@
+FROM armindocachada/tensorflow2-opencv4-raspberrypi4:2.2_4.5.0
+
+RUN apt-get -y install curl
+# installs Tensorflow Lite And Google Coral Edge TPU
+RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list \
+    && echo "deb https://packages.cloud.google.com/apt coral-cloud-stable main" | tee /etc/apt/sources.list.d/coral-cloud.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+    && apt-get update \
+    && apt-get install -y python3-pycoral python3-tflite-runtime
+
+RUN pip3 install imutils && pip3 install slackclient
+RUN apt-get install -y ffmpeg
+
+COPY scripts/ /scripts
+
+CMD ["tail","-f","/dev/null"]

@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  camera:
+     container_name: camera
+     build:
+        context: .
+        dockerfile: Dockerfile_tflite
+     network_mode: host
+     restart: always
+     volumes:
+        - /dev/bus/usb:/dev/bus/usb
+        - /opt/vc:/opt/vc
+        - ./python:/app
+        - ./output:/output
+        - /tmp/.X11-unix:/tmp/.X11-unix
+     environment:
+        LD_LIBRARY_PATH: /opt/vc/lib
+        DISPLAY:
+     devices:
+        - "/dev/vchiq:/dev/vchiq"
+     privileged: true
+     #entrypoint: ["tail", "-f", "/dev/null" ]
+     entrypoint: ["/scripts/start_camera.sh",  "-objects", "bird,cat,dog" ]
