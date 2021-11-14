@@ -1,5 +1,5 @@
 FROM armindocachada/tensorflow2-opencv4-raspberrypi4:2.2_4.5.0
-
+RUN apt-get update --allow-releaseinfo-change 
 RUN apt-get -y install curl
 # installs Tensorflow Lite And Google Coral Edge TPU
 RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list \

@@ -2,9 +2,7 @@ version: "3.7"
 services:
   camera:
      container_name: camera 
-     build:
-        context: .
-        dockerfile: Dockerfile_tensorflow
+     image: armindocachada/tensorflow2-opencv4-raspberrypi4:2.2_4.5.0
      network_mode: host
      restart: always
      volumes:
